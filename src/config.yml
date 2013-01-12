@@ -1,0 +1,9 @@
+sql:
+  driver: mysql #No Point in changing this at the moment
+  host: localhost
+  port: 3306
+  database: database
+  username: username
+  password: password
+  prefix: battle_
+  auto-create: true

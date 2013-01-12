@@ -1,0 +1,19 @@
+name: BattleVerify
+main: net.battlenexus.bukkit.verify.BattleVerify
+version: 1.0.0-beta1
+author: Lavoaster
+commands:
+   bv:
+      aliases:
+        - verify
+      description: BattleVerify Command.
+      usage: /<command> [option] [arguments]
+   bv code:
+      description: Use a code to link verify ownership.
+      usage: /<command> [code]
+   bv confirm:
+      description: Confirm that you want to link to the account.
+      usage: /<command>
+   bv deny:
+      description: Deny that you want to link to the account.
+      usage: /<command>
