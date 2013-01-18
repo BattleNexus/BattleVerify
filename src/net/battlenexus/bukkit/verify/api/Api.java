@@ -9,6 +9,7 @@ public class Api {
 
     public static String version = "1.0.0";
     public static SqlClass sql;
+    public static String lastVerifiedUser = null;
     
     /**
      * Confirms the user's account by the code they entered    
@@ -18,12 +19,13 @@ public class Api {
      */
     public static boolean confirmByCode(String code, String username) {
         String[] params = { code };
-        sql.build("SELECT count(verify_code) as num FROM "+sql.prefix+"verify WHERE verify_code=?");
+        sql.build("SELECT count(verify_code) as num, verify_fusername FROM "+sql.prefix+"verify WHERE verify_code=?");
         ResultSet results = sql.executePreparedQuery( params );
         
         try {
             while (results.next()) {
                 if (results.getInt("num") > 0){
+                    lastVerifiedUser = results.getString("verify_fusername");
                     String[] p = {username, code};
                     sql.build("UPDATE "
                             + sql.prefix

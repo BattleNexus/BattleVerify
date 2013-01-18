@@ -12,9 +12,9 @@ public class Code extends BNCommand {
         String code = args[0];
         Player player = (Player) sender;
         if(Api.confirmByCode(code, player.getName())) {
-            sender.sendMessage("Your account has now been confirmed!");
+            sender.sendMessage("Your account has now been verified and linked with "+Api.lastVerifiedUser+"!");
         }else{
-            sender.sendMessage("Verify code not found. Did you type it correctly?");
+            sender.sendMessage("Verification code not found. Did you type it correctly?");
         }
     }
 
