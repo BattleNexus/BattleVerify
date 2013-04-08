@@ -7,22 +7,30 @@ import java.lang.reflect.InvocationTargetException;
 import net.battlenexus.bukkit.verify.api.Api;
 import net.battlenexus.bukkit.verify.listeners.BattleCommands;
 import net.battlenexus.bukkit.verify.sql.SqlClass;
+import net.milkbowl.vault.economy.Economy;
 
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BattleVerify extends JavaPlugin {
 
     SqlClass sql;
     boolean connected = false;
+    public static Economy econ = null;
+    public static BattleVerify instance = null;
     
     @Override
     public void onEnable(){
+        if (!setupEconomy() ) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         File config = new File(this.getDataFolder(), "config.yml");
         if (!config.exists()) {
             saveDefaultConfig();
-            getLogger()
-                    .info("Configuration file created, please edit it before attempting to load this plugin");
+            getLogger().info("Configuration file created, please edit it before attempting to load this plugin");
             getServer().getPluginManager().disablePlugin(this);
         }
         getConfig();
@@ -56,6 +64,7 @@ public class BattleVerify extends JavaPlugin {
         
         BattleCommands command = new BattleCommands(sql);
         getCommand("bv").setExecutor(command);
+        instance = this;
     }
     
     @Override
@@ -68,6 +77,18 @@ public class BattleVerify extends JavaPlugin {
                 getLogger().info(
                         "There were errors trying to disconnect from mysql");
         }        
+    }
+    
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
     
     private void setupSQL() throws ClassNotFoundException,
